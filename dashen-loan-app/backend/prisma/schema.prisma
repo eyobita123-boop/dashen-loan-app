@@ -1,180 +1,166 @@
 generator client {
-      provider = "prisma-client-js"
+  provider = "prisma-client-js"
 }
 
 datasource db {
-      provider = "postgresql"
-        url      = env("DATABASE_URL")
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
 }
 
 model User {
-      id           String   @id @default(cuid())
-        email        String   @unique
-          password     String
-            fullName     String
-              role         UserRole @default(LOAN_OFFICER)
-                branch       String?
-                  createdAt    DateTime @default(now())
-                    updatedAt    DateTime @updatedAt
-                      loans        Loan[]
-                        riskAssessments RiskAssessment[]
+  id           String   @id @default(cuid())
+  email        String   @unique
+  password     String
+  fullName     String
+  role         UserRole @default(LOAN_OFFICER)
+  branch       String?
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+  loans        Loan[]
+  riskAssessments RiskAssessment[]
 }
 
 enum UserRole {
-      LOAN_OFFICER
-        MANAGER
-          ADMIN
+  LOAN_OFFICER
+  MANAGER
+  ADMIN
 }
 
 model Customer {
-      id               String   @id @default(cuid())
-        fullName         String
-          tin              String?  @unique
-            businessLicense  String?
-              phone            String
-                email            String?
-                  address          String
-                    businessType     BusinessType
-                      yearsInOperation Int
-                        createdAt        DateTime @default(now())
-                          updatedAt        DateTime @updatedAt
-                            loans            Loan[]
+  id               String   @id @default(cuid())
+  fullName         String
+  tin              String?  @unique
+  businessLicense  String?
+  phone            String
+  email            String?
+  address          String
+  businessType     BusinessType
+  yearsInOperation Int
+  createdAt        DateTime @default(now())
+  updatedAt        DateTime @updatedAt
+  loans            Loan[]
 }
 
 enum BusinessType {
-      SOLE_PROPRIETOR
-        PARTNERSHIP
-          PLC
-            SHARE_COMPANY
-              COOPERATIVE
-                OTHER
+  SOLE_PROPRIETOR
+  PARTNERSHIP
+  PLC
+  SHARE_COMPANY
+  COOPERATIVE
+  OTHER
 }
 
 model Loan {
-      id                String     @id @default(cuid())
-        loanType          LoanType
-          customerId        String
-            customer          Customer   @relation(fields: [customerId], references: [id], onDelete: Cascade)
-              amount            Float
-                interestRate      Float
-                  tenureMonths      Int
-                    monthlyPayment    Float
-                      status            LoanStatus @default(PENDING)
-                        approvalDate      DateTime?
-                          disbursementDate  DateTime?
-                            daysPastDue       Int        @default(0)
-                              classification    LoanClassification? @default(PASS)
-                                provisioningPct   Float      @default(0.01)
-                                  riskGrade         String?
-                                    collateralValue   Float?
-                                      collateralType    String?
-                                        userId            String
-                                          user              User       @relation(fields: [userId], references: [id])
-                                            createdAt         DateTime   @default(now())
-                                              updatedAt         DateTime   @updatedAt
-                                                repayments        Repayment[]
-                                                  riskAssessment    RiskAssessment?
+  id                String     @id @default(cuid())
+  loanType          LoanType
+  customerId        String
+  customer          Customer   @relation(fields: [customerId], references: [id], onDelete: Cascade)
+  amount            Float
+  interestRate      Float
+  tenureMonths      Int
+  monthlyPayment    Float
+  status            LoanStatus @default(PENDING)
+  approvalDate      DateTime?
+  disbursementDate  DateTime?
+  daysPastDue       Int        @default(0)
+  classification    LoanClassification? @default(PASS)
+  provisioningPct   Float      @default(0.01)
+  riskGrade         String?
+  collateralValue   Float?
+  collateralType    String?
+  userId            String
+  user              User       @relation(fields: [userId], references: [id])
+  createdAt         DateTime   @default(now())
+  updatedAt         DateTime   @updatedAt
+  repayments        Repayment[]
+  riskAssessment    RiskAssessment?
+  collaterals       Collateral[]
 }
 
 enum LoanType {
-      STAFF_MORTGAGE
-        STAFF_AUTO
-          RESA
-            CONSUMER
-              TERM
-                OVERDRAFT
-                  PRE_SHIPMENT
-                    MERCHANDISE
-                      GUARANTEE
+  STAFF_MORTGAGE
+  STAFF_AUTO
+  RESA
+  CONSUMER
+  TERM
+  OVERDRAFT
+  PRE_SHIPMENT
+  MERCHANDISE
+  GUARANTEE
 }
 
 enum LoanStatus {
-      PENDING
-        APPROVED
-          REJECTED
-            DISBURSED
-              CLOSED
-                DEFAULTED
+  PENDING
+  APPROVED
+  REJECTED
+  DISBURSED
+  CLOSED
+  DEFAULTED
 }
 
 enum LoanClassification {
-      PASS
-        SPECIAL_MENTION
-          SUBSTANDARD
-            DOUBTFUL
-              LOSS
+  PASS
+  SPECIAL_MENTION
+  SUBSTANDARD
+  DOUBTFUL
+  LOSS
 }
 
 model Repayment {
-      id           String   @id @default(cuid())
-        loanId       String
-          loan         Loan     @relation(fields: [loanId], references: [id], onDelete: Cascade)
-            dueDate      DateTime
-              paidDate     DateTime?
-                principal    Float
-                  interest     Float
-                    totalAmount  Float
-                      status       RepaymentStatus @default(PENDING)
-                        createdAt    DateTime @default(now())
-                          updatedAt    DateTime @updatedAt
+  id           String   @id @default(cuid())
+  loanId       String
+  loan         Loan     @relation(fields: [loanId], references: [id], onDelete: Cascade)
+  dueDate      DateTime
+  paidDate     DateTime?
+  principal    Float
+  interest     Float
+  totalAmount  Float
+  status       RepaymentStatus @default(PENDING)
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
 }
 
 enum RepaymentStatus {
-      PENDING
-        PAID
-          PARTIAL
-            OVERDUE
+  PENDING
+  PAID
+  PARTIAL
+  OVERDUE
 }
 
 model RiskAssessment {
-      id                    String   @id @default(cuid())
-        loanId                String   @unique
-          loan                  Loan     @relation(fields: [loanId], references: [id], onDelete: Cascade)
-            userId                String
-              user                  User     @relation(fields: [userId], references: [id])
-                score                 Float
-                  grade                 String
-                    level                 String
-                      response              String
-                        maxLoanToCollateral   Float
-                          parameters            Json     // stores all 34 risk parameters
-                            createdAt             DateTime @default(now())
-                              updatedAt             DateTime @updatedAt
+  id                  String   @id @default(cuid())
+  loanId              String   @unique
+  loan                Loan     @relation(fields: [loanId], references: [id], onDelete: Cascade)
+  userId              String
+  user                User     @relation(fields: [userId], references: [id])
+  score               Float
+  grade               String
+  level               String
+  response            String
+  maxLoanToCollateral Float
+  parameters          Json
+  createdAt           DateTime @default(now())
+  updatedAt           DateTime @updatedAt
 }
 
 model Collateral {
-      id              String   @id @default(cuid())
-        loanId          String
-          loan            Loan     @relation(fields: [loanId], references: [id], onDelete: Cascade)
-            type            String
-              estimatedValue  Float
-                discountFactor  Float
-                  netValue        Float
-                    ageYears        Int
-                      location        String?
-                        documentRef     String?
-                          status          CollateralStatus @default(ACTIVE)
-                            createdAt       DateTime @default(now())
-                              updatedAt       DateTime @updatedAt
+  id              String   @id @default(cuid())
+  loanId          String
+  loan            Loan     @relation(fields: [loanId], references: [id], onDelete: Cascade)
+  type            String
+  estimatedValue  Float
+  discountFactor  Float
+  netValue        Float
+  ageYears        Int
+  location        String?
+  documentRef     String?
+  status          CollateralStatus @default(ACTIVE)
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
 }
 
 enum CollateralStatus {
-      ACTIVE
-        RELEASED
-          FORECLOSED
-}
-}
-}
-}
-}
-}
-}
-}
-}
-}
-}
-}
-}
-}
-}
+  ACTIVE
+  RELEASED
+  FORECLOSED
 }
