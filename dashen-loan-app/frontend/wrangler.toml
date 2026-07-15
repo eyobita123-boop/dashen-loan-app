@@ -1,0 +1,12 @@
+name = "dashen-loan-frontend"
+type = "pages"
+
+[build]
+command = "npm run build"
+cwd = "/"
+
+[build.environment]
+NODE_VERSION = "18"
+
+[[pages.preview_urls]]
+url = "https://dashen-loan.pages.dev"
