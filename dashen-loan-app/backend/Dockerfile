@@ -1,17 +1,18 @@
 # ---- Builder Stage ----
 FROM node:18-slim AS builder
 
-# Install OpenSSL (required by Prisma)
+# Install OpenSSL
 RUN apt-get update -y && apt-get install -y openssl
 
 WORKDIR /usr/src/app
 
-COPY package.json package-lock.json ./
+# Copy from backend subfolder
+COPY backend/package.json backend/package-lock.json ./
 RUN npm ci
 
-COPY prisma ./prisma
-COPY src ./src
-COPY tsconfig.json ./
+COPY backend/prisma ./prisma
+COPY backend/src ./src
+COPY backend/tsconfig.json ./
 
 RUN npx prisma generate
 RUN npm run build
@@ -19,12 +20,11 @@ RUN npm run build
 # ---- Runtime Stage ----
 FROM node:18-slim
 
-# Also install OpenSSL in the runtime image
 RUN apt-get update -y && apt-get install -y openssl
 
 WORKDIR /usr/src/app
 
-COPY package.json package-lock.json ./
+COPY backend/package.json backend/package-lock.json ./
 COPY --from=builder /usr/src/app/dist ./dist
 COPY --from=builder /usr/src/app/node_modules ./node_modules
 
