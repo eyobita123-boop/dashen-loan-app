@@ -1,8 +1,5 @@
 # ---- Builder Stage ----
-FROM node:18-alpine AS builder
-
-# Install OpenSSL 1.1 compatibility for Prisma
-RUN apk add --no-cache openssl1.1-compat libc6-compat
+FROM node:18-slim AS builder
 
 WORKDIR /usr/src/app
 
@@ -17,12 +14,10 @@ RUN npx prisma generate
 RUN npm run build
 
 # ---- Runtime Stage ----
-FROM node:18-alpine
-
-# Also install OpenSSL 1.1 in the runtime image
-RUN apk add --no-cache openssl1.1-compat libc6-compat
+FROM node:18-slim
 
 WORKDIR /usr/src/app
+
 COPY package.json package-lock.json ./
 COPY --from=builder /usr/src/app/dist ./dist
 COPY --from=builder /usr/src/app/node_modules ./node_modules
