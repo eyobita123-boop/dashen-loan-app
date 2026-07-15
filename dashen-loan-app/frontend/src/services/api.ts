@@ -1,8 +1,10 @@
 import axios from 'axios';
 
-// Mock data generator for loan calculations
+// ============================================================
+// 🎯 MOCK DATA GENERATOR – All API responses
+// ============================================================
 function getMockResponse(url: string, data: any) {
-  // Staff Mortgage
+  // ----- STAFF MORTGAGE -----
   if (url.includes('/loans/staff-mortgage')) {
     return {
       success: true,
@@ -17,7 +19,7 @@ function getMockResponse(url: string, data: any) {
     };
   }
 
-  // Staff Auto
+  // ----- STAFF AUTO -----
   if (url.includes('/loans/auto')) {
     return {
       success: true,
@@ -31,7 +33,7 @@ function getMockResponse(url: string, data: any) {
     };
   }
 
-  // RESA
+  // ----- RESA -----
   if (url.includes('/loans/resa')) {
     return {
       success: true,
@@ -44,7 +46,7 @@ function getMockResponse(url: string, data: any) {
     };
   }
 
-  // Consumer Loan
+  // ----- CONSUMER LOAN -----
   if (url.includes('/loans/consumer')) {
     return {
       success: true,
@@ -59,7 +61,7 @@ function getMockResponse(url: string, data: any) {
     };
   }
 
-  // Term Loan
+  // ----- TERM LOAN -----
   if (url.includes('/loans/term')) {
     return {
       success: true,
@@ -72,7 +74,7 @@ function getMockResponse(url: string, data: any) {
     };
   }
 
-  // Overdraft
+  // ----- OVERDRAFT -----
   if (url.includes('/loans/overdraft')) {
     return {
       success: true,
@@ -86,7 +88,7 @@ function getMockResponse(url: string, data: any) {
     };
   }
 
-  // Pre-Shipment
+  // ----- PRE-SHIPMENT -----
   if (url.includes('/loans/pre-shipment')) {
     return {
       success: true,
@@ -100,7 +102,7 @@ function getMockResponse(url: string, data: any) {
     };
   }
 
-  // Risk Assessment
+  // ----- RISK ASSESSMENT -----
   if (url.includes('/risk/assess')) {
     return {
       success: true,
@@ -114,7 +116,7 @@ function getMockResponse(url: string, data: any) {
     };
   }
 
-  // Loan Classification
+  // ----- LOAN CLASSIFICATION -----
   if (url.includes('/risk/classify')) {
     return {
       success: true,
@@ -127,7 +129,7 @@ function getMockResponse(url: string, data: any) {
     };
   }
 
-  // Collateral Valuation
+  // ----- COLLATERAL VALUATION -----
   if (url.includes('/collateral/evaluate')) {
     return {
       success: true,
@@ -139,7 +141,7 @@ function getMockResponse(url: string, data: any) {
     };
   }
 
-  // Dashboard summary
+  // ----- DASHBOARD -----
   if (url.includes('/reports/dashboard')) {
     return {
       success: true,
@@ -165,7 +167,7 @@ function getMockResponse(url: string, data: any) {
     };
   }
 
-  // NPL trend
+  // ----- NPL TREND -----
   if (url.includes('/reports/npl-trend')) {
     return {
       success: true,
@@ -186,7 +188,7 @@ function getMockResponse(url: string, data: any) {
     };
   }
 
-  // Customers
+  // ----- CUSTOMERS -----
   if (url.includes('/customers')) {
     return {
       success: true,
@@ -215,7 +217,7 @@ function getMockResponse(url: string, data: any) {
     };
   }
 
-  // Login – return a fake token
+  // ----- LOGIN -----
   if (url.includes('/auth/login')) {
     return {
       success: true,
@@ -231,7 +233,7 @@ function getMockResponse(url: string, data: any) {
     };
   }
 
-  // Register – success
+  // ----- REGISTER -----
   if (url.includes('/auth/register')) {
     return {
       success: true,
@@ -244,7 +246,7 @@ function getMockResponse(url: string, data: any) {
     };
   }
 
-  // Me – return user
+  // ----- GET ME -----
   if (url.includes('/auth/me')) {
     return {
       success: true,
@@ -257,22 +259,22 @@ function getMockResponse(url: string, data: any) {
     };
   }
 
-  // Default – return a generic success
+  // ----- DEFAULT -----
   return { success: true, data: { message: 'Mock response' } };
 }
 
-// Create axios instance (but we won't actually send requests)
+// ============================================================
+// 📦 AXIOS INSTANCE WITH MOCK INTERCEPTOR
+// ============================================================
 const api = axios.create({
   baseURL: 'https://dashen-loan-app-production.up.railway.app/api',
   headers: { 'Content-Type': 'application/json' },
 });
 
-// Intercept all requests and return mock responses
+// Intercept all requests – return mock data instead of making real network calls
 api.interceptors.request.use((config) => {
-  // Don't send the actual request – just return a resolved promise with mock data
   const mockData = getMockResponse(config.url || '', config.data);
-  // We'll throw an error to stop the actual request, but we'll handle it in the response interceptor
-  // Better: we'll override the adapter to return mock data
+  // Return a resolved promise with mock data
   config.adapter = () => {
     return Promise.resolve({
       data: mockData,
@@ -285,7 +287,6 @@ api.interceptors.request.use((config) => {
   return config;
 });
 
-// Keep interceptors for token (though not needed)
 api.interceptors.response.use(
   (response) => response,
   (error) => Promise.reject(error)
