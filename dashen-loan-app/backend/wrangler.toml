@@ -1,9 +1,9 @@
-name = "dashen-loan-backend"
-account_id = "REPLACE_WITH_YOUR_ACCOUNT_ID"
-compatibility_date = "2026-07-15"
-type = "webpack"
-workers_dev = true
+# wrangler.toml – for Cloudflare Pages (frontend)
+name = "dashen-loan-app"
+type = "pages"
 
 [build]
-command = "npm install && npm run build"
-upload = { format = "service-worker" }
+command = "cd frontend && npm install && npm run build"
+
+[build.environment]
+NODE_VERSION = "18"
