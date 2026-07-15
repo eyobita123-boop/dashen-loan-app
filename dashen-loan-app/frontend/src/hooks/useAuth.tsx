@@ -73,35 +73,4 @@ export const useAuth = () => {
   const context = useContext(AuthContext);
   if (!context) throw new Error('useAuth must be used within AuthProvider');
   return context;
-};                                                                                                                                                  const login = async (email: string, password: string) => {
-                                                                                                                                                      const res = await apiLogin(email, password);
-                                                                                                                                                          if (res.success) {
-                                                                                                                                                                localStorage.setItem('token', res.data.token);
-                                                                                                                                                                      setUser(res.data.user);
-                                                                                                                                                                          } else {
-                                                                                                                                                                                throw new Error(res.error || 'Login failed');
-                                                                                                                                                                                    }
-                                                                                                                                                                                      };
-
-                                                                                                                                                                                        const register = async (data: any) => {
-                                                                                                                                                                                            const res = await apiRegister(data);
-                                                                                                                                                                                                if (!res.success) throw new Error(res.error || 'Registration failed');
-                                                                                                                                                                                                  };
-
-                                                                                                                                                                                                    const logout = () => {
-                                                                                                                                                                                                        localStorage.removeItem('token');
-                                                                                                                                                                                                            setUser(null);
-                                                                                                                                                                                                              };
-
-                                                                                                                                                                                                                return (
-                                                                                                                                                                                                                    <AuthContext.Provider value={{ user, loading, login, register, logout, isAuthenticated: !!user }}>
-                                                                                                                                                                                                                          {children}
-                                                                                                                                                                                                                              </AuthContext.Provider>
-                                                                                                                                                                                                                                );
-                                                                                                                                                                                                                                };
-
-                                                                                                                                                                                                                                export const useAuth = () => {
-                                                                                                                                                                                                                                  const context = useContext(AuthContext);
-                                                                                                                                                                                                                                    if (!context) throw new Error('useAuth must be used within AuthProvider');
-                                                                                                                                                                                                                                      return context;
-                                                                                                                                                                                                                                      };
+};
