@@ -1,7 +1,5 @@
-                                                                                                                                                                            <Route path="risk-rating" element={<RiskRating />} />
-  import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom';
+import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom';
 import Layout from './components/common/Layout';
-import Login from './pages/Login';
 import Dashboard from './pages/Dashboard';
 import StaffMortgage from './pages/StaffMortgage';
 import StaffAuto from './pages/StaffAuto';
@@ -16,46 +14,15 @@ import Classification from './pages/Classification';
 import CustomerList from './pages/CustomerList';
 import Reports from './pages/Reports';
 import { AuthProvider, useAuth } from './hooks/useAuth';
-import ProtectedRoute from './components/common/ProtectedRoute';
 import { useEffect } from 'react';
-
-// Auto-login wrapper
-function AutoLoginWrapper({ children }: { children: React.ReactNode }) {
-  const { login, isAuthenticated } = useAuth();
-
-  useEffect(() => {
-    if (!isAuthenticated) {
-      // Auto-login with default credentials
-      login('admin@dashen.com', 'password123').catch(() => {
-        // If fails, just set a fake user in localStorage
-        localStorage.setItem('token', 'fake-token');
-        localStorage.setItem('user', JSON.stringify({
-          id: '1',
-          email: 'admin@dashen.com',
-          fullName: 'Admin User',
-          role: 'ADMIN'
-        }));
-        window.location.reload();
-      });
-    }
-  }, [isAuthenticated, login]);
-
-  return <>{children}</>;
-}
 
 function App() {
   return (
     <AuthProvider>
       <BrowserRouter>
         <Routes>
-          <Route path="/login" element={<Login />} />
-          <Route path="/" element={
-            <AutoLoginWrapper>
-              <ProtectedRoute>
-                <Layout />
-              </ProtectedRoute>
-            </AutoLoginWrapper>
-          }>
+          {/* Bypass login – all routes go directly to Layout */}
+          <Route path="/*" element={<Layout />}>
             <Route index element={<Navigate to="/dashboard" />} />
             <Route path="dashboard" element={<Dashboard />} />
             <Route path="staff-mortgage" element={<StaffMortgage />} />
@@ -77,14 +44,4 @@ function App() {
   );
 }
 
-export default App;                                                                                                                                                                                      <Route path="classification" element={<Classification />} />
-                                                                                                                                                                                                    <Route path="customers" element={<CustomerList />} />
-                                                                                                                                                                                                                <Route path="reports" element={<Reports />} />
-                                                                                                                                                                                                                          </Route>
-                                                                                                                                                                                                                                  </Routes>
-                                                                                                                                                                                                                                        </BrowserRouter>
-                                                                                                                                                                                                                                            </AuthProvider>
-                                                                                                                                                                                                                                              );
-                                                                                                                                                                                                                                              }
-
-                                                                                                                                                                                                                                              export default App;
+export default App;
