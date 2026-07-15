@@ -15,7 +15,7 @@
     "recharts": "^2.7.0",
     "react-hook-form": "^7.45.0",
     "@hookform/resolvers": "^3.1.0",
-    "zod": "^3.21.0"
+    "zod": "^3.21.0",
     "lucide-react": "^0.263.1"
   },
   "devDependencies": {
