@@ -73,15 +73,7 @@ export const useAuth = () => {
   const context = useContext(AuthContext);
   if (!context) throw new Error('useAuth must be used within AuthProvider');
   return context;
-};                                                                                                                })
-                                                                                                                        .catch(() => localStorage.removeItem('token'))
-                                                                                                                                .finally(() => setLoading(false));
-                                                                                                                                    } else {
-                                                                                                                                          setLoading(false);
-                                                                                                                                              }
-                                                                                                                                                }, []);
-
-                                                                                                                                                  const login = async (email: string, password: string) => {
+};                                                                                                                                                  const login = async (email: string, password: string) => {
                                                                                                                                                       const res = await apiLogin(email, password);
                                                                                                                                                           if (res.success) {
                                                                                                                                                                 localStorage.setItem('token', res.data.token);
