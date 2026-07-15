@@ -20,32 +20,22 @@ interface AuthContextType {
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
 
 export const AuthProvider = ({ children }: { children: ReactNode }) => {
-  // Always set a fake user – no API calls
   const [user] = useState<User>({
     id: '1',
     email: 'admin@dashen.com',
     fullName: 'Admin User',
     role: 'ADMIN',
   });
-  const [loading] = useState(false);
 
-  const login = async () => {
-    // Do nothing – already logged in
-  };
-
-  const register = async () => {
-    // Do nothing
-  };
-
-  const logout = () => {
-    // Do nothing – but you could clear state if needed
-  };
+  const login = async () => {};
+  const register = async () => {};
+  const logout = () => {};
 
   return (
     <AuthContext.Provider
       value={{
         user,
-        loading,
+        loading: false,
         login,
         register,
         logout,
