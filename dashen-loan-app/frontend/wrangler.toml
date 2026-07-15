@@ -1,12 +1,8 @@
-name = "dashen-loan-frontend"
+name = "dashen-loan-app"
 type = "pages"
 
 [build]
-command = "npm run build"
-cwd = "/"
+command = "cd frontend && npm install && npm run build"
 
 [build.environment]
 NODE_VERSION = "18"
-
-[[pages.preview_urls]]
-url = "https://dashen-loan.pages.dev"
