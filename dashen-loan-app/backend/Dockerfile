@@ -1,6 +1,9 @@
 # ---- Builder Stage ----
 FROM node:18-slim AS builder
 
+# Install OpenSSL (required by Prisma)
+RUN apt-get update -y && apt-get install -y openssl
+
 WORKDIR /usr/src/app
 
 COPY package.json package-lock.json ./
@@ -15,6 +18,9 @@ RUN npm run build
 
 # ---- Runtime Stage ----
 FROM node:18-slim
+
+# Also install OpenSSL in the runtime image
+RUN apt-get update -y && apt-get install -y openssl
 
 WORKDIR /usr/src/app
 
